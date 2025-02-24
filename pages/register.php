@@ -1,11 +1,12 @@
+
 <?php
-include('../includes/db.php');  // Database connection
+include('../includes/db.php');  // Adjusted path
 session_start();
 
 if (isset($_POST['register'])) {
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
-    $role = 'user'; // Default role for users
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password before saving
+    $role = 'user'; // Default role for regular users
 
     // Check if the email already exists
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -13,20 +14,19 @@ if (isset($_POST['register'])) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        echo "<script>alert('Email is already registered!');</script>";
+        echo "Email is already registered!";
     } else {
         // Insert new user
         $stmt = $conn->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)");
         $stmt->execute([$email, $password, $role]);
 
-        // Log the user in after successful registration
-        $_SESSION['user_id'] = $conn->lastInsertId();
-        header("Location: ../index.php"); // Redirect to the homepage
+        // After registration, log the user in and redirect to the main page
+        $_SESSION['user_id'] = $conn->lastInsertId(); // Store the user ID in session
+        header("Location: ../index.php"); // Redirect to the main page
         exit();
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

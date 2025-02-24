@@ -1,5 +1,6 @@
+
 <?php
-include('../includes/db.php');  // Include the database connection
+include('../includes/db.php');  // Corrected path to db.php
 session_start();
 
 if (isset($_POST['login'])) {
